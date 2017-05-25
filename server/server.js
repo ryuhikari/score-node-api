@@ -44,6 +44,20 @@ app.get('/api/scores/top', (req, res) => {
     });
 });
 
+app.get('/api/scores/:name', (req, res) => {
+    var name = req.params.name;
+
+    Score.find({name}).then((scores) => {
+        if (!scores) {
+            return res.status(404).send();
+        }
+
+        res.send({scores});
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
 app.listen(port, () => {
     console.log(`Started on port ${port}`);
 });
