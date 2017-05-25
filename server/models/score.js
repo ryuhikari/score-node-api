@@ -1,6 +1,8 @@
 var mongoose = require('mongoose');
 
-var Score = mongoose.model('Score', {
+const _ = require('lodash');
+
+var ScoreSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
@@ -12,5 +14,19 @@ var Score = mongoose.model('Score', {
         required: true
     },
 });
+
+ScoreSchema.methods.toJSON = function() {
+    var score = this;
+    var scoreObject = score.toObject();
+    var scoreModified = {
+        score: scoreObject.score,
+        name: scoreObject.name,
+        createdAt: new Date(scoreObject._id.getTimestamp()).getTime()
+    };
+
+    return scoreModified;
+};
+
+var Score = mongoose.model('Score', ScoreSchema);
 
 module.exports = {Score};
