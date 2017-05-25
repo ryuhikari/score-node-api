@@ -7,6 +7,7 @@ const {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose')
 var {Score} = require('./models/score');
+var {enableCORS} = require('./middleware/enableCORS');
 
 var app = express();
 const port = process.env.PORT;
@@ -30,15 +31,15 @@ app.post('/api/scores', (req, res) => {
 
 app.get('/api/scores', (req, res) => {
     Score.find({}).sort({score: -1}).then((scores) => {
-        res.send({scores});
+        res.jsonp({scores});
     }, (e) => {
         res.status(400).send(e);
     });
 });
 
-app.get('/api/scores/top', (req, res) => {
+app.get('/api/scores/top', enableCORS, (req, res) => {
     Score.find({}).sort({score: -1}).limit(10).then((scores) => {
-        res.send({scores});
+        res.jsonp({scores});
     }, (e) => {
         res.status(400).send(e);
     });
@@ -52,7 +53,7 @@ app.get('/api/scores/:name', (req, res) => {
             return res.status(404).send();
         }
 
-        res.send({scores});
+        res.jsonp({scores});
     }).catch((e) => {
         res.status(400).send();
     });
